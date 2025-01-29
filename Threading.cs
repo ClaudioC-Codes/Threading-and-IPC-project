@@ -14,7 +14,7 @@ namespace Threading_and_IPC_project
             BankAccount Alexa = new BankAccount("Alexa", "Bowler", 2600.55);
             BankAccount Reina = new BankAccount("Reina", "Gonzales", 6430.20);
 
-            //Testing concurrent strings with different accounts.
+            //Testing concurrent threads with different accounts.
             Thread thread1 = new Thread(() => WithdrawSequence(David));
             Thread thread2 = new Thread(() => WithdrawSequence(Alexa));
             Thread thread3 = new Thread(() => WithdrawSequence(Reina));
@@ -25,7 +25,7 @@ namespace Threading_and_IPC_project
 
         }
 
-        //Series of transactions that will be down on the account objects
+        //Series of transactions that will be done on the account objects
         public static void WithdrawSequence(BankAccount account)
         {
             account.Withdraw(1000.00);
