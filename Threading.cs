@@ -29,8 +29,11 @@ namespace Threading_and_IPC_project
         public static void WithdrawSequence(BankAccount account)
         {
             account.Withdraw(1000.00);
+            Thread.Sleep(1000);
             account.Withdraw(2000.00);
+            Thread.Sleep(1000);
             account.Withdraw(500.00);
+            Thread.Sleep(1000);
             account.Withdraw(750.23);
         }
 
@@ -72,7 +75,7 @@ namespace Threading_and_IPC_project
             }
             else
             {
-                Console.WriteLine("Insufficient funds");
+                Console.WriteLine("[" + name + " " + lastName + "]" + " Insufficient funds");
             }
             
         }
