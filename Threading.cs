@@ -7,6 +7,8 @@ namespace Threading_and_IPC_project
 
     class Threading
     {
+        private static Mutex _lock1 = new Mutex();
+        private static Mutex _lock2 = new Mutex();
         static void Main(string[] args)
         {
             //Testing-Development-Deployment area
@@ -66,8 +68,24 @@ namespace Threading_and_IPC_project
             }
         }
 
-        //Series of transactions that will be done on the account objects
-        public static void WithdrawSequence(BankAccount account)
+        public static void DeadlockCreation()
+        {
+            BankAccountMutex account1 = new BankAccountMutex("David", "Martin", 5000.50);
+            BankAccountMutex account2 = new BankAccountMutex("Alexa", "Bowler", 2600.55);
+            
+            Thread thread1 = new Thread(() => TransferAToB(account1, account2));
+            thread1.Name = "[Thread 1]";
+            Thread thread2 = new Thread(() => TransferBToA(account2, account1));
+            thread2.Name = "[Thread 2]";
+            
+            thread1.Start();
+            thread2.Start();
+            
+            
+            
+        }
+
+        public static void WithdrawSequence(BankAccount account) //Series of transactions that will be done on the account objects
         {
             account.Withdraw(1000.00);
             Thread.Sleep(1000);
@@ -87,6 +105,58 @@ namespace Threading_and_IPC_project
                 Thread.Sleep(1000); //Thread sleeping is no longer needed due to Mutex locking. However, I still employ it so I can watch the console as it happens.
             }
             
+        }
+
+        public static void TransferAToB(BankAccountMutex accountA, BankAccountMutex accountB) //Method accesses _lock1 first but is blocked from _lock2 causing a deadlock
+        {
+             _lock1.WaitOne();
+             try
+             {
+                accountA.Withdraw(500.00);
+                Thread.Sleep(1000); //Ensure other thread catches up. Simulating more work.
+                
+                _lock2.WaitOne(); //Deadlock here
+                try
+                {
+                    accountB.Deposit(500.00); //Method is never able to reach this due to Deadlock
+                }
+                finally
+                {
+                    _lock2.ReleaseMutex();
+                }
+
+             }
+             finally
+             {
+                 _lock1.ReleaseMutex();
+             }
+
+        }
+        
+        public static void TransferBToA(BankAccountMutex accountB, BankAccountMutex accountA) //Method aaccesses _lock2 first but is blocked from _lock1 causing a deadlock.
+        {
+            _lock2.WaitOne();
+            try
+            {
+                accountB.Withdraw(200.00);
+                Thread.Sleep(1000); //Ensure other thread catches up. Simulating more work.
+                
+                _lock1.WaitOne(); //Deadlock here
+                try
+                {
+                    accountA.Deposit(200.00); //Method is never able to reach this due to Deadlock
+                }
+                finally
+                {
+                    _lock1.ReleaseMutex();
+                }
+
+            }
+            finally
+            {
+                _lock2.ReleaseMutex();
+            }
+
         }
 
 
