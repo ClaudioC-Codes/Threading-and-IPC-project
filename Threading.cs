@@ -9,7 +9,16 @@ namespace Threading_and_IPC_project
     {
         static void Main(string[] args)
         {
-            BasicThreadOperations();
+            BankAccountMutex david = new BankAccountMutex("David", "Martin", 5000.50);
+
+            Thread thread1 = new Thread(() => WithdrawSequenceMutex(david));
+            thread1.Name = "[Thread 1]";
+            Thread thread2 = new Thread(() => WithdrawSequenceMutex(david));
+            thread2.Name = "[Thread2]";
+            
+            thread1.Start();
+            thread2.Start();
+
 
         }
 
@@ -61,6 +70,17 @@ namespace Threading_and_IPC_project
             Thread.Sleep(1000);
             account.Withdraw(750.23);
         }
+        
+        public static void WithdrawSequenceMutex(BankAccountMutex account)
+        {
+            Random rand = new Random();
+
+            for(int i = 0; i < 10; i++) {
+                account.Withdraw(Math.Round(rand.NextDouble() * 5000, 2));
+                Thread.Sleep(1000); //Thread sleeping is no longer needed due to Mutex locking. However, I still employ it so I can watch the console as it happens.
+            }
+            
+        }
 
 
     }
@@ -102,6 +122,70 @@ namespace Threading_and_IPC_project
             {
                 Console.WriteLine("[" + name + " " + lastName + "]" + " Insufficient funds");
             }
+            
+        }
+        
+    }
+    
+    class BankAccountMutex //Bank account with the implementation of Mutex locks
+    {
+        private String name = "";
+        private String lastName = "";
+        private double balance = 0.0;
+        
+        private readonly Mutex mutex = new Mutex(); //readonly to prevent reassignment and maintain thread safety
+
+        public BankAccountMutex()
+        {
+            name = "Some";
+            lastName = "Guy";
+            balance = 5000.0;
+        }
+
+        public BankAccountMutex(String fName,String lName, double startBalance)
+        {
+            name = fName;
+            lastName = lName;
+            balance = startBalance;
+        }
+
+        public void Deposit(double amount) //Mutex implemented to ensure accurate balance updates.
+        {
+            mutex.WaitOne();
+            try
+            {
+                balance += amount;
+                Console.WriteLine($"{Thread.CurrentThread.Name} deposited {amount}.");
+            }
+            finally
+            {
+                mutex.ReleaseMutex();
+            }
+            
+        }
+
+        public void Withdraw(double amount) //Mutex ensures only 1 thread can access the balance during Withdraws, preventing accidental negative balances.
+        {
+            
+            mutex.WaitOne();
+            try
+            {
+                if (balance > amount)
+                {
+                    balance -= amount;
+                    Console.WriteLine($"{Thread.CurrentThread.Name} has withdrawn {amount}. Balance remaining: {balance}.");
+                }
+                else
+                {
+                    Console.WriteLine($"{Thread.CurrentThread.Name} failed to withdraw {amount}. Insufficient funds.");
+                    Deposit(5000.00);
+                }  
+            }
+            finally
+            {
+                mutex.ReleaseMutex();
+            }
+            
             
         }
         
