@@ -9,20 +9,45 @@ namespace Threading_and_IPC_project
     {
         static void Main(string[] args)
         {
+            BasicThreadOperations();
 
-            BankAccount David = new BankAccount("David", "Crow", 3500.25);
-            BankAccount Alexa = new BankAccount("Alexa", "Bowler", 2600.55);
-            BankAccount Reina = new BankAccount("Reina", "Gonzales", 6430.20);
+        }
 
+        public static void BasicThreadOperations() //Uses 11mb of memory on my environment & 0.12% CPU usage
+        {
+            BankAccount account1 = new BankAccount("David", "Crow", 3500.25);
+            BankAccount account2 = new BankAccount("Alexa", "Bowler", 2600.55);
+            BankAccount account3 = new BankAccount("Reina", "Gonzales", 6430.20);
+            BankAccount account4 = new BankAccount("Alice", "Johnson", 5000.00);
+            BankAccount account5 = new BankAccount("Michael", "Smith", 3200.75);
+            BankAccount account6 = new BankAccount("Samantha", "Brown", 1500.50);
+            BankAccount account7 = new BankAccount("David", "Wilson", 7800.25);
+            BankAccount account8 = new BankAccount("Emily", "Anderson", 2400.00);
+            BankAccount account9 = new BankAccount("Robert", "Martinez", 9100.90);
+            BankAccount account10 = new BankAccount("Jessica", "Taylor", 6700.35);
+            
             //Testing concurrent threads with different accounts.
-            Thread thread1 = new Thread(() => WithdrawSequence(David));
-            Thread thread2 = new Thread(() => WithdrawSequence(Alexa));
-            Thread thread3 = new Thread(() => WithdrawSequence(Reina));
+            Thread thread1 = new Thread(() => WithdrawSequence(account1));
+            Thread thread2 = new Thread(() => WithdrawSequence(account2));
+            Thread thread3 = new Thread(() => WithdrawSequence(account3));
+            Thread thread4 = new Thread(() => WithdrawSequence(account4));
+            Thread thread5 = new Thread(() => WithdrawSequence(account5));
+            Thread thread6 = new Thread(() => WithdrawSequence(account6));
+            Thread thread7 = new Thread(() => WithdrawSequence(account7));
+            Thread thread8 = new Thread(() => WithdrawSequence(account8));
+            Thread thread9 = new Thread(() => WithdrawSequence(account9));
+            Thread thread10 = new Thread(() => WithdrawSequence(account10));
 
             thread1.Start();
             thread2.Start();
             thread3.Start();
-
+            thread4.Start();
+            thread5.Start();
+            thread6.Start();
+            thread7.Start();
+            thread8.Start();
+            thread9.Start();
+            thread10.Start();
         }
 
         //Series of transactions that will be done on the account objects
