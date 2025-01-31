@@ -9,15 +9,9 @@ namespace Threading_and_IPC_project
     {
         static void Main(string[] args)
         {
-            BankAccountMutex david = new BankAccountMutex("David", "Martin", 5000.50);
-
-            Thread thread1 = new Thread(() => WithdrawSequenceMutex(david));
-            thread1.Name = "[Thread 1]";
-            Thread thread2 = new Thread(() => WithdrawSequenceMutex(david));
-            thread2.Name = "[Thread2]";
+            //Testing-Development-Deployment area
             
-            thread1.Start();
-            thread2.Start();
+            
 
 
         }
@@ -57,6 +51,19 @@ namespace Threading_and_IPC_project
             thread8.Start();
             thread9.Start();
             thread10.Start();
+        }
+
+        public static void ResourceProtection() //Uses 11mb of memory & Highest CPU usage was 1%
+        {
+            BankAccountMutex david = new BankAccountMutex("David", "Martin", 5000.50);
+
+            for (int i = 0; i < 10; i++)
+            {
+                String name = $"[Thread {i}]";
+                Thread thread = new Thread(() => WithdrawSequenceMutex(david));
+                thread.Name = name;
+                thread.Start();
+            }
         }
 
         //Series of transactions that will be done on the account objects
