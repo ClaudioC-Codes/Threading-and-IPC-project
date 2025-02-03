@@ -12,7 +12,7 @@ namespace Threading_and_IPC_project
         static void Main(string[] args)
         {
             //Testing-Development-Deployment area
-            
+            DeadlockResolution();
             
 
 
@@ -85,6 +85,21 @@ namespace Threading_and_IPC_project
             
         }
 
+        public static void DeadlockResolution()
+        {
+            BankAccountMutex account1 = new BankAccountMutex("David", "Martin", 5000.50);
+            BankAccountMutex account2 = new BankAccountMutex("Alexa", "Bowler", 2600.55);
+
+            Thread thread1 = new Thread(() => DetectDeadlockA(account1, account2));
+            thread1.Name = "[Thread 1]";
+            Thread thread2 = new Thread(() => DetectDeadlockB(account2, account1));
+            thread2.Name = "[Thread 2]";
+            
+            thread1.Start();
+            thread2.Start();
+
+        }
+
         public static void WithdrawSequence(BankAccount account) //Series of transactions that will be done on the account objects
         {
             account.Withdraw(1000.00);
@@ -107,6 +122,7 @@ namespace Threading_and_IPC_project
             
         }
 
+        //Transfer methods used in DeadlockCreation()
         public static void TransferAToB(BankAccountMutex accountA, BankAccountMutex accountB) //Method accesses _lock1 first but is blocked from _lock2 causing a deadlock
         {
              _lock1.WaitOne();
@@ -133,7 +149,7 @@ namespace Threading_and_IPC_project
 
         }
         
-        public static void TransferBToA(BankAccountMutex accountB, BankAccountMutex accountA) //Method aaccesses _lock2 first but is blocked from _lock1 causing a deadlock.
+        public static void TransferBToA(BankAccountMutex accountB, BankAccountMutex accountA) //Method accesses _lock2 first but is blocked from _lock1 causing a deadlock.
         {
             _lock2.WaitOne();
             try
@@ -159,7 +175,99 @@ namespace Threading_and_IPC_project
 
         }
 
+        //Transfer methods used in DeadlockResolution(). These methods will detect the deadlock and cancel transactions returning funds.
+        public static void DetectDeadlockA(BankAccountMutex accountA, BankAccountMutex accountB) //Method accesses _lock1 first but is blocked from _lock2 causing a deadlock
+        {
 
+            if (_lock1.WaitOne(TimeSpan.FromSeconds(1))) //Applying a timeout to the lock acquisition
+            {
+                
+                try
+                {
+                    
+                    accountA.Withdraw(500.00);
+                    Thread.Sleep(1000); //Ensure other thread catches up. Simulating more work.
+                    
+                    if (_lock2.WaitOne(TimeSpan.FromSeconds(1))) //Deadlock here
+                    {
+                        
+                        try
+                        {
+                            accountB.Deposit(500.00); //Method is never able to reach this due to Deadlock
+                        }
+                        finally
+                        {
+                            _lock2.ReleaseMutex();
+                        }
+                        
+                    }
+                    else
+                    {
+                        Console.WriteLine($"{Thread.CurrentThread.Name}A deadlock was detected at method A, lock 2. Transaction cancelled, returning funds.");
+                        accountA.Deposit(500.00);
+                    }
+
+                }
+                finally
+                {
+                    _lock1.ReleaseMutex();
+                }
+                
+                
+            }
+            else
+            {
+                Console.WriteLine("A deadlock was detected at method A, lock 1.");
+            }
+
+
+        }
+        
+        public static void DetectDeadlockB(BankAccountMutex accountB, BankAccountMutex accountA) //Method accesses _lock2 first but is blocked from _lock1 causing a deadlock.
+        {
+            if (_lock2.WaitOne(TimeSpan.FromSeconds(1))) //Applying a timeout to the lock acquisition
+            {
+                
+                try
+                {
+                    
+                    accountB.Withdraw(500.00);
+                    Thread.Sleep(1000); //Ensure other thread catches up. Simulating more work.
+                    
+                    if (_lock1.WaitOne(TimeSpan.FromSeconds(1))) //Deadlock here
+                    {
+                        
+                        try
+                        {
+                            accountA.Deposit(500.00); //Method is never able to reach this due to Deadlock
+                        }
+                        finally
+                        {
+                            _lock1.ReleaseMutex();
+                        }
+                        
+                    }
+                    else
+                    {
+                        Console.WriteLine($"{Thread.CurrentThread.Name}A deadlock was detected at method B, lock 1. Transaction cancelled, returning funds.");
+                        accountB.Deposit(500.00);
+                    }
+
+                }
+                finally
+                {
+                    _lock2.ReleaseMutex();
+                }
+                
+                
+            }
+            else
+            {
+                Console.WriteLine("A deadlock was detected at method B, lock 2.");
+            }
+
+        }
+        
     }
 
     class BankAccount
