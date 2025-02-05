@@ -9,7 +9,7 @@ namespace Threading_and_IPC_project
     {
         private static Mutex _lock1 = new Mutex();
         private static Mutex _lock2 = new Mutex();
-        static void Main(string[] args)
+        static void main(string[] args)
         {
             //Testing-Development-Deployment area
             DeadlockResolution();
