@@ -9,16 +9,9 @@ namespace Threading_and_IPC_project
     {
         private static Mutex _lock1 = new Mutex();
         private static Mutex _lock2 = new Mutex();
-        static void main(string[] args)
-        {
-            //Testing-Development-Deployment area
-            DeadlockResolution();
-            
+        
 
-
-        }
-
-        public static void BasicThreadOperations() //Uses 11mb of memory on my environment & 0.12% CPU usage
+        public void BasicThreadOperations() //Uses 11mb of memory on my environment & 0.12% CPU usage
         {
             BankAccount account1 = new BankAccount("David", "Crow", 3500.25);
             BankAccount account2 = new BankAccount("Alexa", "Bowler", 2600.55);
@@ -55,7 +48,7 @@ namespace Threading_and_IPC_project
             thread10.Start();
         }
 
-        public static void ResourceProtection() //Uses 11mb of memory & Highest CPU usage was 1%
+        public void ResourceProtection() //Uses 11mb of memory & Highest CPU usage was 1%
         {
             BankAccountMutex david = new BankAccountMutex("David", "Martin", 5000.50);
 
@@ -68,7 +61,7 @@ namespace Threading_and_IPC_project
             }
         }
 
-        public static void DeadlockCreation()
+        public void DeadlockCreation()
         {
             BankAccountMutex account1 = new BankAccountMutex("David", "Martin", 5000.50);
             BankAccountMutex account2 = new BankAccountMutex("Alexa", "Bowler", 2600.55);
@@ -85,7 +78,7 @@ namespace Threading_and_IPC_project
             
         }
 
-        public static void DeadlockResolution()
+        public void DeadlockResolution()
         {
             BankAccountMutex account1 = new BankAccountMutex("David", "Martin", 5000.50);
             BankAccountMutex account2 = new BankAccountMutex("Alexa", "Bowler", 2600.55);
@@ -100,7 +93,7 @@ namespace Threading_and_IPC_project
 
         }
 
-        public static void WithdrawSequence(BankAccount account) //Series of transactions that will be done on the account objects
+        public void WithdrawSequence(BankAccount account) //Series of transactions that will be done on the account objects
         {
             account.Withdraw(1000.00);
             Thread.Sleep(1000);
@@ -111,7 +104,7 @@ namespace Threading_and_IPC_project
             account.Withdraw(750.23);
         }
         
-        public static void WithdrawSequenceMutex(BankAccountMutex account)
+        public void WithdrawSequenceMutex(BankAccountMutex account)
         {
             Random rand = new Random();
 
@@ -123,7 +116,7 @@ namespace Threading_and_IPC_project
         }
 
         //Transfer methods used in DeadlockCreation()
-        public static void TransferAToB(BankAccountMutex accountA, BankAccountMutex accountB) //Method accesses _lock1 first but is blocked from _lock2 causing a deadlock
+        public void TransferAToB(BankAccountMutex accountA, BankAccountMutex accountB) //Method accesses _lock1 first but is blocked from _lock2 causing a deadlock
         {
              _lock1.WaitOne();
              try
@@ -149,7 +142,7 @@ namespace Threading_and_IPC_project
 
         }
         
-        public static void TransferBToA(BankAccountMutex accountB, BankAccountMutex accountA) //Method accesses _lock2 first but is blocked from _lock1 causing a deadlock.
+        public void TransferBToA(BankAccountMutex accountB, BankAccountMutex accountA) //Method accesses _lock2 first but is blocked from _lock1 causing a deadlock.
         {
             _lock2.WaitOne();
             try
@@ -176,7 +169,7 @@ namespace Threading_and_IPC_project
         }
 
         //Transfer methods used in DeadlockResolution(). These methods will detect the deadlock and cancel transactions returning funds.
-        public static void DetectDeadlockA(BankAccountMutex accountA, BankAccountMutex accountB) //Method accesses _lock1 first but is blocked from _lock2 causing a deadlock
+        public void DetectDeadlockA(BankAccountMutex accountA, BankAccountMutex accountB) //Method accesses _lock1 first but is blocked from _lock2 causing a deadlock
         {
 
             if (_lock1.WaitOne(TimeSpan.FromSeconds(1))) //Applying a timeout to the lock acquisition
@@ -223,7 +216,7 @@ namespace Threading_and_IPC_project
 
         }
         
-        public static void DetectDeadlockB(BankAccountMutex accountB, BankAccountMutex accountA) //Method accesses _lock2 first but is blocked from _lock1 causing a deadlock.
+        public void DetectDeadlockB(BankAccountMutex accountB, BankAccountMutex accountA) //Method accesses _lock2 first but is blocked from _lock1 causing a deadlock.
         {
             if (_lock2.WaitOne(TimeSpan.FromSeconds(1))) //Applying a timeout to the lock acquisition
             {

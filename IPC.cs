@@ -9,7 +9,7 @@ namespace Threading_and_IPC_project
     public class IPC
     {
 
-        static void Main(string[] args)
+        public void Test()
         {
             //Testing basic cat command to read file. Going to add pipes "|" later.
             string command = "cat TransactionHistory.txt";
@@ -20,7 +20,7 @@ namespace Threading_and_IPC_project
 
         }
 
-        static string BashCommand(string command)
+        public string BashCommand(string command)
         {
             var psi = new ProcessStartInfo(); //Creating a process
             psi.FileName = "/bin/bash"; //This is what calls bash shell to do commands
