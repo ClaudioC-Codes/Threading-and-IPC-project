@@ -110,7 +110,14 @@ namespace Threading_and_IPC_project
             thread1.Start();
             thread2.Start();
             
+            thread1.Join(3000);
+            thread2.Join(3000);
             
+            Console.WriteLine("\n--- Deadlock Creation Complete ---\n");
+            
+            //Comment lines out when testing the method. Used to end the program and threads when called from the menu.
+            Console.WriteLine("Terminating program to end all threads and ensure safety.");
+            Environment.Exit(0);   
             
         }
 

@@ -5,7 +5,11 @@ namespace Threading_and_IPC_project
     
     public class Launcher
     {
+        //Uncomment and comment methods to swap between Main methods. First main runs the program with the controlled menu.
+        //Second main is the free testing environment.
+        
 
+        ///*
         static void Main(string[] args)
         {
             
@@ -21,7 +25,7 @@ namespace Threading_and_IPC_project
 
                 do
                 {
-                    Console.WriteLine("Which function would you like to showcase.\nA: Basic Thread Operation\nB: Resource Protection\nC: Deadlock Creation - Warning: The program will stop remaining in the deadlock. Use this last or prepare to restart.\nD: Deadlock Resolution\nE: IPC implementation");
+                    Console.WriteLine("Which function would you like to showcase.\nA: Basic Thread Operation\nB: Resource Protection\nC: Deadlock Creation - Warning: Test last, program will be in lock for 3 seconds then fully stopped.\nD: Deadlock Resolution\nE: IPC implementation");
                     choice = Console.ReadLine().ToUpper();
                     
                     switch (choice)
@@ -63,6 +67,22 @@ namespace Threading_and_IPC_project
 
 
         }
+        //*/
+
+        /*
+        static void Main(string[] args)
+        {
+            Threading p1 = new Threading();
+            IPC p2 = new IPC();
+            
+            //p1.BasicThreadOperations();
+            //p1.ResourceProtection();
+            //p1.DeadlockCreation();
+            //p1.DeadlockResolution();
+            //p2.PassCommand();
+            
+        }
+        */
 
 
 
