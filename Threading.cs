@@ -13,6 +13,9 @@ namespace Threading_and_IPC_project
 
         public void BasicThreadOperations() //Uses 11mb of memory on my environment & 0.12% CPU usage
         {
+            
+            Console.WriteLine("\n--- Initializing Basic Thread Operations ---\n");
+            
             BankAccount account1 = new BankAccount("David", "Crow", 3500.25);
             BankAccount account2 = new BankAccount("Alexa", "Bowler", 2600.55);
             BankAccount account3 = new BankAccount("Reina", "Gonzales", 6430.20);
@@ -46,11 +49,30 @@ namespace Threading_and_IPC_project
             thread8.Start();
             thread9.Start();
             thread10.Start();
+
+            //These .Joins are here to prevent the main method from continuing until the threads are done processing.
+            thread1.Join();
+            thread2.Join();
+            thread3.Join();
+            thread4.Join();
+            thread5.Join();
+            thread6.Join();
+            thread7.Join();
+            thread8.Join();
+            thread9.Join();
+            thread10.Join();
+            
+            Console.WriteLine("\n--- Basic Thread Operations Complete ---\n");
+            
         }
 
         public void ResourceProtection() //Uses 11mb of memory & Highest CPU usage was 1%
         {
+            
+            Console.WriteLine("\n--- Initializing Resource Protection ---\n");
+            
             BankAccountMutex david = new BankAccountMutex("David", "Martin", 5000.50);
+            List<Thread> threads = new List<Thread>(); //Will store the threads.
 
             for (int i = 0; i < 10; i++)
             {
@@ -58,11 +80,25 @@ namespace Threading_and_IPC_project
                 Thread thread = new Thread(() => WithdrawSequenceMutex(david));
                 thread.Name = name;
                 thread.Start();
+                threads.Add(thread);
             }
+
+            //Calls .Join on each thread in the list. This allows all the threads to continue running whilst forcing main to wait for all of them to finished.
+            //This maintains thread concurrency.
+            foreach (Thread thread in threads)
+            {
+                thread.Join();
+            }
+            
+            Console.WriteLine("\n--- Resource Protection Complete ---\n");
+            
         }
 
         public void DeadlockCreation()
         {
+            
+            Console.WriteLine("\n--- Initializing Deadlock Creation ---\n");
+            
             BankAccountMutex account1 = new BankAccountMutex("David", "Martin", 5000.50);
             BankAccountMutex account2 = new BankAccountMutex("Alexa", "Bowler", 2600.55);
             
@@ -80,6 +116,9 @@ namespace Threading_and_IPC_project
 
         public void DeadlockResolution()
         {
+            
+            Console.WriteLine("\n--- Initializing Deadlock Resolution ---\n");
+            
             BankAccountMutex account1 = new BankAccountMutex("David", "Martin", 5000.50);
             BankAccountMutex account2 = new BankAccountMutex("Alexa", "Bowler", 2600.55);
 
@@ -90,6 +129,11 @@ namespace Threading_and_IPC_project
             
             thread1.Start();
             thread2.Start();
+            
+            thread1.Join();
+            thread2.Join();
+            
+            Console.WriteLine("\n--- Deadlock Resolution Complete ---\n");
 
         }
 
@@ -333,7 +377,7 @@ namespace Threading_and_IPC_project
             try
             {
                 balance += amount;
-                Console.WriteLine($"{Thread.CurrentThread.Name} deposited {amount}.");
+                Console.WriteLine($"{Thread.CurrentThread.Name} deposited {amount}, to {name} {lastName}.");
             }
             finally
             {
@@ -351,7 +395,7 @@ namespace Threading_and_IPC_project
                 if (balance > amount)
                 {
                     balance -= amount;
-                    Console.WriteLine($"{Thread.CurrentThread.Name} has withdrawn {amount}. Balance remaining: {balance}.");
+                    Console.WriteLine($"{Thread.CurrentThread.Name} has withdrawn {amount}, from {name} {lastName}. Balance remaining: {balance}.");
                 }
                 else
                 {

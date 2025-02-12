@@ -11,6 +11,9 @@ namespace Threading_and_IPC_project
 
         public void PassCommand()
         {
+            
+            Console.WriteLine("\n--- Initializing IPC Implementation ---\n");
+            
             //This is the string holding our Bash command which calls multiple text processes that communicate through pipes.
             //First it calls cat which is used to open the .txt file, this file is then passed to sort through a pipe.
             //Second in sort, the contents are sorted alphabetically by the first letter in each line. Information is then passed to tr.
@@ -19,6 +22,8 @@ namespace Threading_and_IPC_project
             string command = "cat TransactionHistory.txt | sort | tr '_' ' ' | sed 's/^...//' ";
             
             Console.WriteLine(BashCommand(command)); //This is where the command is passed to the method and its contents are printed to console.
+            
+            Console.WriteLine("\n--- IPC Implementation Complete ---\n");
 
         }
 
