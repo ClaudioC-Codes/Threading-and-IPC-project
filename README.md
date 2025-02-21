@@ -2,7 +2,7 @@
 Operatubg systens are a major component of technology we use today. This project focuses on exploring the different techniques and practices involved with multi-threaded programming, inter-process communication, and the Linux operating system. The purpose of this endeavor is to build upon our knowledge and understanding of operating systems.
 
 ## Dependencies
-This project does not inlist the use of any outside tools or resources outside of the environment requirements. The choice of operating system or IDE are recommendations, anything supporting C# and Linux are usable.
+This project does not inlist the use of any outside tools or resources outside of the environment requirements. The choice of operating system or IDE are recommendations, anything supporting C# and Linux are usable however they will provide the least possible issues.
 1. Ubuntu 20.04 LTS - Or other up to date Linux systems.
 2. JetBrains Rider IDE - Or any IDE supporting C#
 3. .NET 9.0 Framework
